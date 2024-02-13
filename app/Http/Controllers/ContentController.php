@@ -35,9 +35,9 @@ class ContentController extends Controller
                 ->limit(10)
                 ->get();
 
-            $comments = Comment::with(['user:id,name,avatar'])
+            $comments = Comment::with(['user:id,name,avatar','replies.user:id,name,avatar'])
                 ->where('content_id', $content->id)
-                ->orderBy('id', 'desc')
+                ->orderBy('id', 'asc')
                 ->paginate(5)
                 ->withQueryString();
 
