@@ -20,6 +20,8 @@ class UserSeeder extends Seeder
             'password' => 'Password!',
         ]);
 
+        User::factory(20)->create(["role" => "admin"]);
+
         User::factory(100)->create();
     }
 }

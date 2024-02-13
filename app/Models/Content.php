@@ -19,9 +19,7 @@ class Content extends Model
 
     public function getSlugOptions(): SlugOptions
     {
-        return SlugOptions::create()
-            ->generateSlugsFrom('title')
-            ->saveSlugsTo('slug');
+        return SlugOptions::create()->generateSlugsFrom('title')->saveSlugsTo('slug');
     }
 
     public function getRouteKeyName()
@@ -31,16 +29,12 @@ class Content extends Model
 
     protected function thumbnail(): Attribute
     {
-        return Attribute::make(
-            get: fn ($value) => str_starts_with($value, 'http') || ! $value ? $value : asset("storage/contents/$value"),
-        );
+        return Attribute::make(get: fn ($value) => str_starts_with($value, 'http') || !$value ? $value : asset("storage/contents/$value"));
     }
 
     protected function publishedAt(): Attribute
     {
-        return Attribute::make(
-            get: fn ($value) => $value ? date('F j, Y', strtotime($value)) : null,
-        );
+        return Attribute::make(get: fn ($value) => $value ? date('F j, Y', strtotime($value)) : null);
     }
 
     public function category(): BelongsTo
@@ -63,13 +57,18 @@ class Content extends Model
         return $this->belongsToMany(Tag::class, 'content_tag');
     }
 
-    public function scopeFilterBy(Builder $query, ?array $filterBy, ?string $searchTerm): Builder
+    public function scopeFilterBy(Builder $query, ?array $filterBy): Builder
     {
         return $query
-            ->whereHas('author', function ($subquery) use ($searchTerm) {
-                $subquery->where('name', 'like', "%{$searchTerm}%");
+
+            ->when(isset($filterBy['search']) && $filterBy['search'] !== '', function ($query) use ($filterBy) {
+                $query
+                    ->whereHas('author', function ($subquery) use ($filterBy) {
+                        $subquery->where('name', 'like', "%{$filterBy['search']}%");
+                    })
+                    ->orWhere('title', 'like', "%{$filterBy['search']}%");
             })
-            ->orWhere('title', 'like', "%{$searchTerm}%")
+
             ->when(isset($filterBy['category']) && $filterBy['category'] !== '', function ($query) use ($filterBy) {
                 $query->whereHas('blogCategory', function ($query) use ($filterBy) {
                     $query->where('slug', $filterBy['category']);

@@ -12,6 +12,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([UserSeeder::class, CategorySeeder::class, ContentSeeder::class, TagSeeder::class, CommentSeeder::class]);
+        $this->call([UserSeeder::class, CategorySeeder::class, TagSeeder::class, ContentSeeder::class,CommentSeeder::class]);
     }
 }

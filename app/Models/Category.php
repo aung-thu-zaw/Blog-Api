@@ -25,7 +25,7 @@ class Category extends Model
         return 'slug';
     }
 
-    public function content(): HasMany
+    public function contents(): HasMany
     {
         return $this->hasMany(Content::class);
     }

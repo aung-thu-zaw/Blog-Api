@@ -29,7 +29,8 @@ class ContentFactory extends Factory
             'title' => fake()->unique()->sentence(),
             'thumbnail' => fake()->imageUrl(),
             'content' => fake()->paragraph(12),
-            'status' => fake()->randomElement(['draft', 'published', 'hidden']),
+            'status' => 'published',
+            'published_at' => fake()->dateTimeBetween('-4 months', now()),
             'created_at' => fake()->dateTimeBetween('-4 months', now()),
             'is_allowed_comment' => fake()->boolean()
         ];
